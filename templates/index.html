@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>きりたん</title>
+	<style>
+		#kiritan {
+			position: fixed;
+			right: -40px;
+			bottom: -40px;
+			z-index: -114514;
+		}
+		#kiritan img {
+			position: absolute;
+			right: 0;
+			bottom: 0;
+		}
+		#panel {
+			width: calc(100vw - 400px);
+			padding-bottom: 100vh;
+		}
+		@media (max-width: 500px) {
+			#panel {
+				width: 100vw;
+				background-color: rgba(255, 255, 255, .5);
+			}
+		}
+		label {
+			display: inline-block;
+			width: 7em;
+			padding-bottom: 1em;
+		}
+		section {
+			padding: 1em 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="kiritan"></div>
+	<div id="panel">
+		<h1>きりたん</h1>
+		<section id="selection"></section>
+		<form method="POST">
+			<input type="hidden" name="data" id="data">
+			<button>コミット</button>
+			→<a target="_blank" href="https://twitter.com/FunnyTimeMaker">連動先</a>
+		</form>
+		<section>
+			{% for k in lib.keys() | reverse %}
+				{{ k }} - <a href="javascript:" onclick="retrieve(this)">{{ lib[k] }}</a><br>
+			{% endfor %}
+		</section>
+	</div>
+	<script>
+		const range = (from, to, expand = {}) => {
+			const r = [];
+			for(let i = from; i <= to; i++){
+				const e = [].concat(expand[i] || [""]);
+				const l = `0${i}`.substr(-2);
+				r.push.apply(r, e.map(x => `${l}${x}`));
+			}
+			return r;
+		};
+		const imgdef = {
+			"体": range(0, 39),
+			"口": range(0, 29, {0:["","a","b","c"],1:["","a","b","c"],2:["","a","b","c"]}),
+			"目": range(0, 35, {0:["","a","b","c"]}),
+			"眉": range(0, 3),
+			"顔": range(0, 9),
+			"他": range(1, 18),
+			"後": range(1, 18).map(e => `${e}m1`),
+		};
+		const imgs = Object.keys(imgdef).map(k => imgdef[k].map(n => `${k}/${n}`)).reduce((a, b) => a.concat(b));
+		
+		let html = "";
+		imgs.forEach(img => {
+			html += `
+				<label>
+					<input type="checkbox" value="${img}" onchange="change()">
+					${img}
+				</label>
+			`;
+		});
+		document.querySelector("#selection").innerHTML = html;
+		
+		var kiritan = {{ init | safe }};
+		
+		const retrieve = t => {
+			kiritan = JSON.parse(t.innerHTML);
+			renewState();
+			render();
+		};
+		const renewState = _ => {
+			document.querySelectorAll("input").forEach(e => {
+				e.checked = kiritan.some(k => k == e.value);
+			})
+		};
+		const change = _ => {
+			kiritan = Array.from(document.querySelectorAll("input")).filter(e => e.checked).map(e => e.value);
+			render();
+		};
+		const render = _ => {
+			document.querySelector("#kiritan").innerHTML = kiritan.map(e => `<img src="static/${e}.png">`).join("");
+		};
+		
+		renewState();
+		render();
+		
+		document.querySelector("form").onsubmit = e => {
+			e.currentTarget.style.visibility = "hidden";
+			document.querySelector("#data").value = JSON.stringify(kiritan);
+		};
+	</script>
+</body>
+</html>
