@@ -7,6 +7,17 @@ from datetime import datetime
 
 app = flask.Flask(__name__)
 
+defaultStyle = [
+	"本体/服",
+	"顔効果/なし",
+	"腕/普通/通常服用",
+	"口/閉じ",
+	"目/普通",
+	"眉/普通",
+	"きりたんぽ/きりたんぽノーマル",
+	"アクセサリ/包丁"
+]
+
 CONSUMER_KEY = ''
 CONSUMER_SECRET = ''
 ACCESS_TOKEN = ''
@@ -25,8 +36,8 @@ except:
 @app.route('/', methods=['GET'])
 def get():
 	vals = list(library.values())
-	init = vals[-1] if len(vals) else ['体/00', '口/00', '目/00', '眉/00', '顔/00']
-	return flask.render_template('index.html', lib=library, init=init)
+	init = vals[-1] if len(vals) else defaultStyle
+	return flask.render_template('index.html', lib=library, init=init, host=flask.request.host)
 
 @app.route('/', methods=['POST'])
 def post():
@@ -36,11 +47,11 @@ def post():
 		img = Image.open('static/%s.png' % img, 'r')
 		canvas.paste(img, (0, 0), img)
 	
-	canvas = canvas.resize((canvas.size[0] * 3, canvas.size[1] * 3))
+	canvas = canvas.resize((canvas.size[0] * 3, canvas.size[1] * 3), Image.BICUBIC)
 	header = canvas.crop((0, 1100, 0 + 1500, 1100 + 500))
 	icon = canvas.crop((310, 390, 310 + 710, 390 + 710))
 	
-	canvas.save('canvas.png', 'png')
+	#canvas.save('canvas.png', 'png')
 	header.save('header.png', 'png')
 	icon.save('icon.png', 'png')
 	
@@ -53,6 +64,10 @@ def post():
 		pickle.dump(library, f)
 	
 	return flask.redirect('/', code=302)
+	
+@app.route('/icon.png')
+def icon():
+	return flask.send_from_directory('./', 'icon.png')
 	
 if __name__ == '__main__':
 	app.debug = True
