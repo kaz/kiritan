@@ -47,11 +47,11 @@ def post():
 		img = Image.open('static/%s.png' % img, 'r')
 		canvas.paste(img, (0, 0), img)
 	
-	canvas = canvas.resize((canvas.size[0] * 3, canvas.size[1] * 3), Image.BICUBIC)
+	canvas = canvas.resize((canvas.size[0] * 3, canvas.size[1] * 3), Image.LANCZOS)
 	header = canvas.crop((0, 1100, 0 + 1500, 1100 + 500))
 	icon = canvas.crop((310, 390, 310 + 710, 390 + 710))
 	
-	#canvas.save('canvas.png', 'png')
+	canvas.save('canvas.png', 'png')
 	header.save('header.png', 'png')
 	icon.save('icon.png', 'png')
 	
