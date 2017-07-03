@@ -1,5 +1,6 @@
-window.im6167817 = state => {
-	const Images = {
+window.im6167817 = window.initializer(
+	"im6167817",
+	{
 		"マーク": [
 			"花",
 			"ため息",
@@ -144,13 +145,12 @@ window.im6167817 = state => {
 			"服破れ",
 			"服"
 		]
-	};
-	const AllowMultiple = [
+	},
+	[
 		"アクセサリ",
 		"マーク"
-	];
-
-	state = state || [
+	],
+	[
 		"本体/服",
 		"顔効果/なし",
 		"腕/普通/通常服用",
@@ -159,49 +159,5 @@ window.im6167817 = state => {
 		"眉/普通",
 		"きりたんぽ/きりたんぽノーマル",
 		"アクセサリ/包丁"
-	];
-
-	let html = "";
-	Object.keys(Images).reverse().forEach(key => {
-		html += `<h2>${key}</h2>`;
-		Images[key].reverse().forEach(img => {
-			const type = AllowMultiple.some(k => k == key) ? "checkbox" : "radio";
-			html += `
-				<label>
-					<input class="img_select" type="${type}" name="${key}" value="${key}/${img}">
-					${img}
-				</label>
-			`;
-		});
-	});
-	document.querySelector("#selection").innerHTML = html;
-
-	const renewState = _ => {
-		document.querySelectorAll("#selection input").forEach(e => {
-			e.checked = state.some(k => k == e.value);
-		});
-	};
-	const change = _ => {
-		state = Array.from(document.querySelectorAll("#selection input")).filter(e => e.checked).map(e => e.value);
-		render();
-	};
-	const render = _ => {
-		document.querySelector("#kiritan").innerHTML = state.map(e => `<img src="/static/im6167817/${e}.png">`).join("");
-	};
-
-	document.querySelectorAll(".img_select").forEach(e => {
-		e.onchange = change;
-	});
-	document.querySelector("form").onsubmit = e => {
-		e.currentTarget.style.visibility = "hidden";
-		document.querySelector("#type").value = "im6167817";
-		document.querySelector("#data").value = JSON.stringify(state);
-	};
-
-	const {style} = document.querySelector("#kiritan");
-	style.right = "-100px";
-	style.bottom = "-50px";
-
-	renewState();
-	render();
-};
+	]
+);

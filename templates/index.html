@@ -14,28 +14,37 @@
 <body>
 	<div id="kiritan"></div>
 	<div id="panel">
-		<h1>きりたん</h1>
 		<section>
+			<h1>きりたん</h1>
 			<label style="width: auto">
 				<input name="type_select" type="radio" value="im6167817">
 				東北きりたん【キャラ素材】
+			</label>
+			<br>
+			<label style="width: auto">
+				<input name="type_select" type="radio" value="im6447064">
+				ふらすこ式立ち絵vol.2 東北きりたん
 			</label>
 		</section>
 		<section id="selection">
 			loading...
 		</section>
-		<form method="POST">
-			<input type="hidden" name="type" id="type">
-			<input type="hidden" name="data" id="data">
-			<button>コミット</button>
+		<section>
+			<form method="POST">
+				<input type="hidden" name="type" id="type">
+				<input type="hidden" name="data" id="data">
+				<button>コミット</button>
+			</form>
+			<br>
 			→ <a target="_blank" href="https://twitter.com/FunnyTimeMaker">連動先</a>
-		</form>
+		</section>
 		<section>
 			<h1>ぎゃらりー</h1>
 			<div id="history"></div>
 		</section>
 	</div>
-	<script src="/static/js/im6167817.js"></script>
 	<script src="/static/js/app.js"></script>
+	<script src="/static/js/im6167817.js"></script>
+	<script src="/static/js/im6447064.js"></script>
 </body>
 </html>

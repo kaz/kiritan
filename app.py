@@ -43,7 +43,7 @@ def post():
 		img = Image.open('static/%s/%s.png' % (type, img), 'r')
 		canvas.paste(img, (0, 0), img)
 
-	canvas, header, icon = imagejob.convert(type, canvas)
+	header, icon = imagejob.convert(type, canvas)
 
 	now = datetime.now()
 	ts = int(now.timestamp())
@@ -54,9 +54,6 @@ def post():
 	header.save('%s/header.png' % path, 'png')
 	icon.save('%s/icon.png' % path, 'png')
 
-	twitter.update_profile_banner('%s/header.png' % path)
-	twitter.update_profile_image('%s/icon.png' % path)
-
 	library[ts] = {
 		'datetime': now.strftime('%Y/%m/%d %H:%M:%S'),
 		'type': type,
@@ -64,6 +61,9 @@ def post():
 	}
 	with open('cache.db', 'wb') as f:
 		pickle.dump(library, f)
+
+	twitter.update_profile_banner('%s/header.png' % path)
+	twitter.update_profile_image('%s/icon.png' % path)
 
 	return flask.redirect('/', code=302)
 
