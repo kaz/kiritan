@@ -1,0 +1,52 @@
+body {
+	overflow-x: hidden;
+}
+#kiritan {
+	position: fixed;
+	right: 9999px;
+	bottom: 9999px;
+	z-index: -114514;
+}
+#kiritan img {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+#panel {
+	width: calc(100vw - 300px);
+	margin-bottom: 100vh;
+	padding-left: 1em;
+}
+@media (max-width: 500px) {
+	#panel {
+		width: 100vw;
+		background-color: rgba(255, 255, 255, .5);
+	}
+}
+label {
+	display: inline-block;
+	width: 12em;
+	padding-bottom: 1em;
+}
+section {
+	padding: 1em 0;
+}
+#history {
+	display: flex;
+	flex-wrap: wrap;
+}
+#history a {
+	display: block;
+	height: 250px;
+	width: 250px;
+	margin: 5px;
+	flex: 0 0 auto;
+	transition: background-size 500ms;
+}
+#history .im6167817 {
+	background-position: 35% 20%;
+	background-size: 150%;
+}
+#history .im6167817:hover {
+	background-size: 175%;
+}

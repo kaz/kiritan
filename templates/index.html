@@ -9,255 +9,33 @@
 	<meta name="twitter:description" content="きりたんかわいい">
 	<meta name="twitter:image" content="http://{{host}}/icon.png">
 	<link rel="shortcut icon" type="image/png" href="/icon.png">
-	<style>
-		body {
-			overflow-x: hidden;
-		}
-		#kiritan {
-			position: fixed;
-			right: -100px;
-			bottom: -50px;
-			z-index: -114514;
-		}
-		#kiritan img {
-			position: absolute;
-			right: 0;
-			bottom: 0;
-		}
-		#panel {
-			width: calc(100vw - 300px);
-			margin-bottom: 100vh;
-			padding-left: 1em;
-		}
-		@media (max-width: 500px) {
-			#panel {
-				width: 100vw;
-				background-color: rgba(255, 255, 255, .5);
-			}
-		}
-		label {
-			display: inline-block;
-			width: 12em;
-			padding-bottom: 1em;
-		}
-		section {
-			padding: 1em 0;
-		}
-		.ret {
-			line-height: 1.6em;
-		}
-	</style>
+	<link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 	<div id="kiritan"></div>
 	<div id="panel">
 		<h1>きりたん</h1>
-		<section id="selection"></section>
+		<section>
+			<label style="width: auto">
+				<input name="type_select" type="radio" value="im6167817">
+				東北きりたん【キャラ素材】
+			</label>
+		</section>
+		<section id="selection">
+			loading...
+		</section>
 		<form method="POST">
+			<input type="hidden" name="type" id="type">
 			<input type="hidden" name="data" id="data">
 			<button>コミット</button>
-			→<a target="_blank" href="https://twitter.com/FunnyTimeMaker">連動先</a>
+			→ <a target="_blank" href="https://twitter.com/FunnyTimeMaker">連動先</a>
 		</form>
 		<section>
-			{% for k in lib.keys() | reverse %}
-				{{ k }} - <a class="ret" href="javascript:" onclick="retrieve(this)">{{ lib[k] }}</a><br>
-			{% endfor %}
+			<h1>ぎゃらりー</h1>
+			<div id="history"></div>
 		</section>
 	</div>
-	<script>
-		var Images = {
-			"マーク": [
-				"花",
-				"ため息",
-				"ばってん",
-				"おこ",
-				"ひらめいた",
-				"ﾋﾞｸｯ",
-				"焦り",
-				"！",
-				"おっ",
-				"汗",
-				"もやもや",
-				"ぼのぼの汗",
-				"ぷんすこ",
-				"？反転",
-				"？",
-				"ハート",
-				"キラーン",
-				"落ち込み"
-			],
-			"アクセサリ": [
-				"鼻血",
-				"赤白リボン",
-				"手持ち包丁血",
-				"手持ち包丁",
-				"タブレット",
-				"吐息",
-				"ずんだ",
-				"味噌",
-				"眼鏡",
-				"血",
-				"ぼさぼさ",
-				"おひげ",
-				"汗",
-				"目閉じ用涙",
-				"涙",
-				"垂れ包丁",
-				"包丁",
-				"獣耳"
-			],
-			"きりたんぽ": [
-				"きりたんぽかしこま腕用",
-				"きりたんぽノーマル",
-				"なし"
-			],
-			"眉": [
-				"悲し",
-				"困り",
-				"怒り",
-				"普通"
-			],
-			"目": [
-				"つぶら",
-				"ニカッ",
-				"キラーン",
-				"○涙",
-				"○",
-				"猫太",
-				"猫",
-				"赤",
-				"アヘ",
-				"怒り",
-				"ジト2",
-				"ジト",
-				"嘲笑上",
-				"嘲笑",
-				"驚き",
-				"点上",
-				"点向こう",
-				"点",
-				"変態だー！",
-				"ぐるぐる",
-				"上",
-				"向こう",
-				"--",
-				"＞＜",
-				"ウインク",
-				"妖艶",
-				"星",
-				"ハート",
-				"レイプ目",
-				"うるうる",
-				"白目",
-				"閉じ笑み",
-				"閉じ",
-				"半目",
-				"ちょっと閉じ",
-				"普通"
-			],
-			"口": [
-				"変態だー",
-				"よだれ2",
-				"よだれ",
-				"アヘ2",
-				"アヘ1",
-				"笛",
-				"ぷくー",
-				"ニタァ",
-				"ぺろ",
-				"リス開き",
-				"リス閉じ",
-				"いぎぎ",
-				"がまん",
-				"む",
-				"ふぁあああ",
-				"驚き",
-				"△",
-				"栗",
-				"がびーん",
-				"ひきつり",
-				"笑い",
-				"えー開き",
-				"えーアニメ2",
-				"えーアニメ1",
-				"むむむ・えー閉じ",
-				"わ",
-				"わアニメ2",
-				"わアニメ1",
-				"わ閉じ",
-				"開き",
-				"アニメ2",
-				"アニメ1",
-				"閉じ"
-			],
-			"腕": [
-				"かしこま/水着用",
-				"かしこま/パジャマ用",
-				"かしこま/通常服用",
-				"普通/水着用",
-				"普通/パジャマ用",
-				"普通/通常服用"
-			],
-			"顔効果": [
-				"青ざめ",
-				"茹で",
-				"頬染め",
-				"なし"
-			],
-			"本体": [
-				"水着",
-				"パジャマ",
-				"服破れ",
-				"服"
-			]
-		};
-		var AllowMultiple = [
-			"アクセサリ",
-			"マーク"
-		];
-		
-		let html = "";
-		Object.keys(Images).reverse().forEach(key => {
-			html += `<h2>${key}</h2>`;
-			Images[key].reverse().forEach(img => {
-				const type = AllowMultiple.some(k => k == key) ? "checkbox" : "radio";
-				html += `
-					<label>
-						<input type="${type}" name="${key}" value="${key}/${img}" onchange="change()">
-						${img}
-					</label>
-				`;
-			});
-		});
-		document.querySelector("#selection").innerHTML = html;
-		
-		var kiritan = {{ init | safe }};
-		
-		const retrieve = t => {
-			kiritan = JSON.parse(t.innerHTML);
-			renewState();
-			render();
-		};
-		const renewState = _ => {
-			document.querySelectorAll("input").forEach(e => {
-				e.checked = kiritan.some(k => k == e.value);
-			})
-		};
-		const change = _ => {
-			kiritan = Array.from(document.querySelectorAll("input")).filter(e => e.checked).map(e => e.value);
-			render();
-		};
-		const render = _ => {
-			document.querySelector("#kiritan").innerHTML = kiritan.map(e => `<img src="static/${e}.png">`).join("");
-		};
-		
-		renewState();
-		render();
-		
-		document.querySelector("form").onsubmit = e => {
-			e.currentTarget.style.visibility = "hidden";
-			document.querySelector("#data").value = JSON.stringify(kiritan);
-		};
-	</script>
+	<script src="/static/js/im6167817.js"></script>
+	<script src="/static/js/app.js"></script>
 </body>
 </html>
