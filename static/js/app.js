@@ -2,7 +2,7 @@ window.initializer = (id, Images, AllowMultiple, defaultState, jobFn) => (state 
 	let html = "";
 	Object.keys(Images).reverse().forEach(key => {
 		html += `<h2>${key}</h2>`;
-		Images[key].reverse().forEach(img => {
+		[].concat(Images[key]).reverse().forEach(img => {
 			const type = AllowMultiple.some(k => k == key) ? "checkbox" : "radio";
 			html += `
 				<label>
