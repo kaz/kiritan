@@ -1,12 +1,16 @@
-window.initializer = (id, Images, AllowMultiple, defaultState, jobFn) => (state = defaultState) => {
+(_ => {
+
+const genImageSet = (type, data) => data.map(e => `<img src="/static/${type}/${e}.png">`).join("");
+
+window.initializer = (type, Images, AllowMultiple, defaultState, jobFn) => (state = defaultState) => {
 	let html = "";
 	Object.keys(Images).reverse().forEach(key => {
 		html += `<h2>${key}</h2>`;
 		[].concat(Images[key]).reverse().forEach(img => {
-			const type = AllowMultiple.some(k => k == key) ? "checkbox" : "radio";
+			const inputType = AllowMultiple.some(k => k == key) ? "checkbox" : "radio";
 			html += `
 				<label>
-					<input class="img_select" type="${type}" name="${key}" value="${key}/${img}">
+					<input class="img_select" type="${inputType}" name="${key}" value="${key}/${img}">
 					${img}
 				</label>
 			`;
@@ -24,7 +28,7 @@ window.initializer = (id, Images, AllowMultiple, defaultState, jobFn) => (state 
 		render();
 	};
 	const render = _ => {
-		document.querySelector("#kiritan").innerHTML = state.map(e => `<img src="/static/${id}/${e}.png">`).join("");
+		document.querySelector("#kiritan").innerHTML = genImageSet(type, state);
 	};
 
 	document.querySelectorAll(".img_select").forEach(e => {
@@ -32,7 +36,7 @@ window.initializer = (id, Images, AllowMultiple, defaultState, jobFn) => (state 
 	});
 	document.querySelector("form").onsubmit = e => {
 		e.currentTarget.style.visibility = "hidden";
-		document.querySelector("#type").value = id;
+		document.querySelector("#type").value = type;
 		document.querySelector("#data").value = JSON.stringify(state);
 	};
 
@@ -63,13 +67,22 @@ fetch("/data.json")
 	let html = "";
 	data.forEach(e => {
 		html += `
-			<a
-				href="javascript:"
-				class="${e.type}"
-				style="background-image: url(/static/cache/${e.key}/canvas.png)"
-				onclick='window.${e.type}(${JSON.stringify(e.data)})'
-			></a>
+			<a href="javascript:" class="${e.type}" onclick='window.apply("${e.type}", ${JSON.stringify(e.data)})'>
+				${genImageSet(e.type, e.data)}
+			</a>
 		`;
 	});
-	document.querySelector("#history").innerHTML = html;
+	document.querySelector("#gallery").innerHTML = html;
 });
+
+window.apply = (type, data) => {
+	const elm = document.documentElement;
+	const sel = document.querySelector("#selection");
+	const originalHeight = sel.clientHeight;
+
+	window[type](data);
+
+	elm.scrollTo(elm.scrollLeft, elm.scrollTop + sel.clientHeight - originalHeight);
+};
+
+})();

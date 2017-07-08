@@ -3,9 +3,10 @@ import json
 import flask
 import pickle
 import tweepy
-import imagejob
 from PIL import Image
 from datetime import datetime
+
+import imagejob
 
 app = flask.Flask(__name__)
 
@@ -47,12 +48,11 @@ def post():
 
 	now = datetime.now()
 	ts = int(now.timestamp())
-	path = 'static/cache/%d' % ts
 
 	os.mkdir(path)
-	canvas.save('%s/canvas.png' % path, 'png')
-	header.save('%s/header.png' % path, 'png')
-	icon.save('%s/icon.png' % path, 'png')
+	canvas.save('static/cache/canvas.png')
+	header.save('static/cache/header.png')
+	icon.save('static/cache/icon.png')
 
 	library[ts] = {
 		'datetime': now.strftime('%Y/%m/%d %H:%M:%S'),
@@ -62,8 +62,8 @@ def post():
 	with open('cache.db', 'wb') as f:
 		pickle.dump(library, f)
 
-	twitter.update_profile_banner('%s/header.png' % path)
-	twitter.update_profile_image('%s/icon.png' % path)
+	twitter.update_profile_banner('static/cache/header.png')
+	twitter.update_profile_image('static/cache/icon.png')
 
 	return flask.redirect('/', code=302)
 
@@ -71,10 +71,5 @@ def post():
 def data():
 	return flask.jsonify(library)
 
-@app.route('/icon.png')
-def icon():
-	return flask.send_from_directory('static/cache/%s' % list(library.keys()).pop(), 'icon.png')
-
 if __name__ == '__main__':
-	app.debug = True
-	app.run(host='0.0.0.0', port=55555)
+	app.run(host='0.0.0.0', port=8000, debug=True)
