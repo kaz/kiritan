@@ -49,7 +49,6 @@ def post():
 	now = datetime.now()
 	ts = int(now.timestamp())
 
-	os.mkdir(path)
 	canvas.save('static/cache/canvas.png')
 	header.save('static/cache/header.png')
 	icon.save('static/cache/icon.png')
